@@ -174,11 +174,13 @@ internal class StreamIO : IDisposable
 	/// <returns></returns>
 	public virtual byte ReadByte()
 	{
-		byte[] arr = new byte[1];
-		byte b = _stream.Read(arr, 0, 1) == 1 ?
-			arr[0] : throw new EndOfStreamException();
+		// avoids the one byte array allocation of the Read(byte[], int, int) path,
+		// this runs once per byte read.
+		int value = _stream.ReadByte();
+		if (value < 0)
+			throw new EndOfStreamException();
 
-		return b;
+		return (byte)value;
 	}
 
 	public virtual async Task<byte> ReadByteAsync(CancellationToken cancellationToken = default)

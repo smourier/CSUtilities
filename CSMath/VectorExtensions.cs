@@ -150,7 +150,7 @@ public static class VectorExtensions
 
 		for (int i = 0; i < vector.Dimension; i++)
 		{
-			length += Math.Pow(vector[i], 2);
+			length += vector[i] * vector[i];
 		}
 
 		return length;
@@ -274,7 +274,8 @@ public static class VectorExtensions
 	public static bool IsZero<T>(this T v)
 		where T : IVector
 	{
-		return v.GetLength() == 0;
+		// sqrt(x) == 0 exactly when x == 0, so the square root is skipped
+		return v.GetLengthSquared() == 0;
 	}
 
 	/// <summary>

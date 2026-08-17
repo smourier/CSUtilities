@@ -4,9 +4,15 @@ namespace CSMath;
 
 public partial struct XYZ : IVector, IEquatable<XYZ>
 {
-	public static explicit operator XYZ(XY xy)
+	/// <summary>
+	/// Adds two vectors together.
+	/// </summary>
+	/// <param name="left">The first source vector.</param>
+	/// <param name="right">The second source vector.</param>
+	/// <returns>The summed vector.</returns>
+	public static XYZ operator +(XYZ left, XYZ right)
 	{
-		return new XYZ(xy.X, xy.Y, 0);
+		return new XYZ(left.X + right.X, left.Y + right.Y, left.Z + right.Z);
 	}
 
 	/// <summary>
@@ -17,30 +23,7 @@ public partial struct XYZ : IVector, IEquatable<XYZ>
 	/// <returns>The difference vector.</returns>
 	public static XYZ operator -(XYZ left, XYZ right)
 	{
-		return left.Subtract(right);
-	}
-
-	/// <summary>
-	/// Negates a given vector.
-	/// </summary>
-	/// <param name="value">The source vector.</param>
-	/// <returns>The negated vector.</returns>
-	public static XYZ operator -(XYZ value)
-	{
-		return Zero.Subtract(value);
-	}
-
-	/// <summary>
-	/// Returns a boolean indicating whether the two given vectors are not equal.
-	/// </summary>
-	/// <param name="left">The first vector to compare.</param>
-	/// <param name="right">The second vector to compare.</param>
-	/// <returns>True if the vectors are not equal; False if they are equal.</returns>
-	public static bool operator !=(XYZ left, XYZ right)
-	{
-		return (left.X != right.X ||
-				left.Y != right.Y ||
-				left.Z != right.Z);
+		return new XYZ(left.X - right.X, left.Y - right.Y, left.Z - right.Z);
 	}
 
 	/// <summary>
@@ -51,7 +34,7 @@ public partial struct XYZ : IVector, IEquatable<XYZ>
 	/// <returns>The product vector.</returns>
 	public static XYZ operator *(XYZ left, XYZ right)
 	{
-		return left.Multiply(right);
+		return new XYZ(left.X * right.X, left.Y * right.Y, left.Z * right.Z);
 	}
 
 	/// <summary>
@@ -62,7 +45,7 @@ public partial struct XYZ : IVector, IEquatable<XYZ>
 	/// <returns>The scaled vector.</returns>
 	public static XYZ operator *(XYZ left, double scalar)
 	{
-		return left * new XYZ(scalar);
+		return new XYZ(left.X * scalar, left.Y * scalar, left.Z * scalar);
 	}
 
 	/// <summary>
@@ -73,7 +56,7 @@ public partial struct XYZ : IVector, IEquatable<XYZ>
 	/// <returns>The scaled vector.</returns>
 	public static XYZ operator *(double scalar, XYZ vector)
 	{
-		return new XYZ(scalar) * vector;
+		return new XYZ(scalar * vector.X, scalar * vector.Y, scalar * vector.Z);
 	}
 
 	/// <summary>
@@ -84,7 +67,7 @@ public partial struct XYZ : IVector, IEquatable<XYZ>
 	/// <returns>The vector resulting from the division.</returns>
 	public static XYZ operator /(XYZ left, XYZ right)
 	{
-		return left.Divide(right);
+		return new XYZ(left.X / right.X, left.Y / right.Y, left.Z / right.Z);
 	}
 
 	/// <summary>
@@ -118,14 +101,15 @@ public partial struct XYZ : IVector, IEquatable<XYZ>
 	}
 
 	/// <summary>
-	/// Adds two vectors together.
+	/// Negates a given vector.
 	/// </summary>
-	/// <param name="left">The first source vector.</param>
-	/// <param name="right">The second source vector.</param>
-	/// <returns>The summed vector.</returns>
-	public static XYZ operator +(XYZ left, XYZ right)
+	/// <param name="value">The source vector.</param>
+	/// <returns>The negated vector.</returns>
+	public static XYZ operator -(XYZ value)
 	{
-		return left.Add(right);
+		// 0 - x (not -x) keeps the sign of a zero component identical to the previous
+		// Zero.Subtract(value) implementation: 0 - (+0) is +0, while -(+0) is -0
+		return new XYZ(0.0 - value.X, 0.0 - value.Y, 0.0 - value.Z);
 	}
 
 	/// <summary>
@@ -139,5 +123,23 @@ public partial struct XYZ : IVector, IEquatable<XYZ>
 		return (left.X == right.X &&
 				left.Y == right.Y &&
 				left.Z == right.Z);
+	}
+
+	/// <summary>
+	/// Returns a boolean indicating whether the two given vectors are not equal.
+	/// </summary>
+	/// <param name="left">The first vector to compare.</param>
+	/// <param name="right">The second vector to compare.</param>
+	/// <returns>True if the vectors are not equal; False if they are equal.</returns>
+	public static bool operator !=(XYZ left, XYZ right)
+	{
+		return (left.X != right.X ||
+				left.Y != right.Y ||
+				left.Z != right.Z);
+	}
+
+	public static explicit operator XYZ(XY xy)
+	{
+		return new XYZ(xy.X, xy.Y, 0);
 	}
 }

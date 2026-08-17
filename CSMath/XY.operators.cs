@@ -4,9 +4,15 @@ namespace CSMath;
 
 public partial struct XY : IVector, IEquatable<XY>
 {
-	public static explicit operator XY(XYZ xyz)
+	/// <summary>
+	/// Adds two vectors together.
+	/// </summary>
+	/// <param name="left">The first source vector.</param>
+	/// <param name="right">The second source vector.</param>
+	/// <returns>The summed vector.</returns>
+	public static XY operator +(XY left, XY right)
 	{
-		return new XY(xyz.X, xyz.Y);
+		return new XY(left.X + right.X, left.Y + right.Y);
 	}
 
 	/// <summary>
@@ -17,29 +23,7 @@ public partial struct XY : IVector, IEquatable<XY>
 	/// <returns>The difference vector.</returns>
 	public static XY operator -(XY left, XY right)
 	{
-		return left.Subtract(right);
-	}
-
-	/// <summary>
-	/// Negates a given vector.
-	/// </summary>
-	/// <param name="value">The source vector.</param>
-	/// <returns>The negated vector.</returns>
-	public static XY operator -(XY value)
-	{
-		return Zero.Subtract(value);
-	}
-
-	/// <summary>
-	/// Returns a boolean indicating whether the two given vectors are not equal.
-	/// </summary>
-	/// <param name="left">The first vector to compare.</param>
-	/// <param name="right">The second vector to compare.</param>
-	/// <returns>True if the vectors are not equal; False if they are equal.</returns>
-	public static bool operator !=(XY left, XY right)
-	{
-		return (left.X != right.X ||
-				left.Y != right.Y);
+		return new XY(left.X - right.X, left.Y - right.Y);
 	}
 
 	/// <summary>
@@ -50,7 +34,7 @@ public partial struct XY : IVector, IEquatable<XY>
 	/// <returns>The product vector.</returns>
 	public static XY operator *(XY left, XY right)
 	{
-		return left.Multiply(right);
+		return new XY(left.X * right.X, left.Y * right.Y);
 	}
 
 	/// <summary>
@@ -61,7 +45,7 @@ public partial struct XY : IVector, IEquatable<XY>
 	/// <returns>The scaled vector.</returns>
 	public static XY operator *(XY left, double scalar)
 	{
-		return left * new XY(scalar);
+		return new XY(left.X * scalar, left.Y * scalar);
 	}
 
 	/// <summary>
@@ -72,7 +56,7 @@ public partial struct XY : IVector, IEquatable<XY>
 	/// <returns>The scaled vector.</returns>
 	public static XY operator *(double scalar, XY vector)
 	{
-		return new XY(scalar) * vector;
+		return new XY(scalar * vector.X, scalar * vector.Y);
 	}
 
 	/// <summary>
@@ -83,7 +67,7 @@ public partial struct XY : IVector, IEquatable<XY>
 	/// <returns>The vector resulting from the division.</returns>
 	public static XY operator /(XY left, XY right)
 	{
-		return left.Divide(right);
+		return new XY(left.X / right.X, left.Y / right.Y);
 	}
 
 	/// <summary>
@@ -115,14 +99,15 @@ public partial struct XY : IVector, IEquatable<XY>
 	}
 
 	/// <summary>
-	/// Adds two vectors together.
+	/// Negates a given vector.
 	/// </summary>
-	/// <param name="left">The first source vector.</param>
-	/// <param name="right">The second source vector.</param>
-	/// <returns>The summed vector.</returns>
-	public static XY operator +(XY left, XY right)
+	/// <param name="value">The source vector.</param>
+	/// <returns>The negated vector.</returns>
+	public static XY operator -(XY value)
 	{
-		return left.Add(right);
+		// 0 - x (not -x) keeps the sign of a zero component identical to the previous
+		// Zero.Subtract(value) implementation: 0 - (+0) is +0, while -(+0) is -0
+		return new XY(0.0 - value.X, 0.0 - value.Y);
 	}
 
 	/// <summary>
@@ -135,5 +120,22 @@ public partial struct XY : IVector, IEquatable<XY>
 	{
 		return (left.X == right.X &&
 				left.Y == right.Y);
+	}
+
+	/// <summary>
+	/// Returns a boolean indicating whether the two given vectors are not equal.
+	/// </summary>
+	/// <param name="left">The first vector to compare.</param>
+	/// <param name="right">The second vector to compare.</param>
+	/// <returns>True if the vectors are not equal; False if they are equal.</returns>
+	public static bool operator !=(XY left, XY right)
+	{
+		return (left.X != right.X ||
+				left.Y != right.Y);
+	}
+
+	public static explicit operator XY(XYZ xyz)
+	{
+		return new XY(xyz.X, xyz.Y);
 	}
 }
