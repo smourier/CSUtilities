@@ -38,7 +38,7 @@ public static class CurveExtensions
 			throw new ArgumentOutOfRangeException(nameof(precision), precision, "The precision must be equal or greater than two.");
 		}
 
-		List<XYZ> points = new();
+		List<XYZ> points = new(precision);
 
 		double start = startAngle;
 		double end = endAngle;
@@ -47,16 +47,31 @@ public static class CurveExtensions
 			end += MathHelper.TwoPI;
 		}
 
-		var t = Matrix4.GetArbitraryAxis(normal);
-
 		var sweep = start - end;
 		var denominator = MathHelper.IsEqual(sweep, MathHelper.TwoPI) ? precision : precision - 1;
 		double delta = (end - start) / denominator;
+
+		// a +Z normal gives the identity arbitrary axis matrix, so the per point multiply is skipped.
+		if (normal.Equals(XYZ.AxisZ))
+		{
+			for (int i = 0; i < precision; i++, start += delta)
+			{
+				var offset = radius * new XYZ(MathHelper.Cos(start), MathHelper.Sin(start), 0.0);
+				points.Add(center + offset);
+			}
+
+			return points;
+		}
+
+		var t = Matrix4.GetArbitraryAxis(normal);
+
 		for (int i = 0; i < precision; i++, start += delta)
 		{
-			var pt = new XYZ(MathHelper.Cos(start), MathHelper.Sin(start), 0.0);
-			pt = center + radius * pt;
-			points.Add(t * pt);
+			// the center is already in world coordinates, only the radius offset is oriented by the
+			// arbitrary axis frame. Transforming center + offset would also mirror the center about
+			// the origin, which for a -Z normal moves the whole circle.
+			var offset = radius * new XYZ(MathHelper.Cos(start), MathHelper.Sin(start), 0.0);
+			points.Add(center + t * offset);
 		}
 
 		return points;
@@ -105,7 +120,7 @@ public static class CurveExtensions
 			throw new ArgumentOutOfRangeException(nameof(precision), precision, "The precision must be equal or greater than two.");
 		}
 
-		List<XYZ> points = new();
+		List<XYZ> points = new(precision);
 
 		double start = startAngle;
 		double end = endAngle;
