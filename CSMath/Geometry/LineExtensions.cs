@@ -1,5 +1,6 @@
 ﻿using CSMath.Extensions;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CSMath.Geometry;
 
@@ -13,7 +14,7 @@ public static class LineExtensions
 	/// <param name="pt1">The first point, which will be the origin of the line.</param>
 	/// <param name="pt2">The second point, used to calculate the direction of the line.</param>
 	/// <returns>A new instance of the specified line type.</returns>
-	public static T CreateFromPoints<T, R>(R pt1, R pt2)
+	public static T CreateFromPoints<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T, R>(R pt1, R pt2)
 		where T : ILine<R>
 		where R : IVector, new()
 	{

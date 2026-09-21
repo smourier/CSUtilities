@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CSUtilities.Extensions;
 
@@ -45,7 +46,7 @@ static class ObjectExtensions
 		}
 	}
 
-	public static void ThrowIf<T, E>(this T parameter, Check<T> check, string message)
+	public static void ThrowIf<T, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] E>(this T parameter, Check<T> check, string message)
 		where E : Exception, new()
 	{
 		if (check(parameter))
