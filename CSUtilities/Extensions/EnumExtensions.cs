@@ -13,8 +13,9 @@ internal
 	static class EnumExtensions
 {
 	public static T GetValueByName<T>(string name)
+		where T : struct, Enum
 	{
-		return Enum.GetValues(typeof(T)).Cast<T>().FirstOrDefault(o => o.ToString() == name);
+		return Enum.GetValues<T>().FirstOrDefault(o => o.ToString() == name);
 	}
 
 	/// <summary>

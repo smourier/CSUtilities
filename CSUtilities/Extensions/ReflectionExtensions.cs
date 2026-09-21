@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CSUtilities.Extensions;
 
 internal static class ReflectionExtensions
 {
-	public static PropertyInfo GetPropertyByName(this Type type, string name)
+	public static PropertyInfo GetPropertyByName([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] this Type type, string name)
 	{
 		return type.GetProperties().FirstOrDefault(o => o.Name == name);
 	}
@@ -26,7 +27,9 @@ internal static class ReflectionExtensions
 		if (!it.IsInterface)
 			throw new ArgumentException("Generic type is not an interface");
 
-		return type.GetInterface(it.FullName) != null;
+		// GetInterface needs the interface list kept as reflection metadata, a type check does not.
+		// an interface is not reported as implementing itself, as GetInterface never did.
+		return type != it && it.IsAssignableFrom(type);
 	}
 
 	/// <summary>

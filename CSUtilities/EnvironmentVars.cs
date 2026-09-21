@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CSUtilities;
 
@@ -46,11 +47,13 @@ internal
 		return Environment.GetEnvironmentVariable(name, target);
 	}
 
+	[RequiresUnreferencedCode("Resolves a TypeConverter by reflection, which trimming may have removed.")]
 	public static T Get<T>(string name)
 	{
 		return Get<T>(name, EnvironmentVariableTarget.Process);
 	}
 
+	[RequiresUnreferencedCode("Resolves a TypeConverter by reflection, which trimming may have removed.")]
 	public static T Get<T>(string name, EnvironmentVariableTarget target)
 	{
 		string value = Environment.GetEnvironmentVariable(name, target);
