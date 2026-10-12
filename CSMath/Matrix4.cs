@@ -435,7 +435,7 @@ public partial struct Matrix4
 		}
 
 		XYZ xaxis;
-		if (Math.Abs(zaxis.X) < (1 / 64) && Math.Abs(zaxis.Y) < (1 / 64))
+		if (Math.Abs(zaxis.X) < (1 / 64.0) && Math.Abs(zaxis.Y) < (1 / 64.0))
 		{
 			xaxis = XYZ.Cross(XYZ.AxisY, zaxis);
 		}
