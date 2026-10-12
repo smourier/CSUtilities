@@ -154,14 +154,28 @@ public struct BoundingBox
 	/// <returns></returns>
 	public static BoundingBox FromPoints(IEnumerable<XYZ> points)
 	{
-		BoundingBox boundingBox = Null;
-
-		foreach (var point in points)
+		using var enumerator = points.GetEnumerator();
+		if (!enumerator.MoveNext())
 		{
-			boundingBox = boundingBox.Merge(new BoundingBox(point));
+			return Null;
 		}
 
-		return boundingBox;
+		// the same Min and Max as merging one point box at a time, without building a box per point.
+		XYZ first = enumerator.Current;
+		double minX = first.X, minY = first.Y, minZ = first.Z;
+		double maxX = first.X, maxY = first.Y, maxZ = first.Z;
+		while (enumerator.MoveNext())
+		{
+			XYZ point = enumerator.Current;
+			minX = System.Math.Min(minX, point.X);
+			minY = System.Math.Min(minY, point.Y);
+			minZ = System.Math.Min(minZ, point.Z);
+			maxX = System.Math.Max(maxX, point.X);
+			maxY = System.Math.Max(maxY, point.Y);
+			maxZ = System.Math.Max(maxZ, point.Z);
+		}
+
+		return new BoundingBox(new XYZ(minX, minY, minZ), new XYZ(maxX, maxY, maxZ));
 	}
 
 	/// <summary>
