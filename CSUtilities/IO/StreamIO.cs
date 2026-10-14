@@ -257,7 +257,7 @@ internal class StreamIO : IDisposable
 	/// <returns></returns>
 	public double ReadDouble<T>() where T : IEndianConverter, new()
 	{
-		return this.readValue<double>(8, new T().ToDouble);
+		return this.readValue<double>(8, EndianConverterInstance<T>.Value.ToDouble);
 	}
 
 	/// <summary>
@@ -276,7 +276,7 @@ internal class StreamIO : IDisposable
 	/// <returns></returns>
 	public int ReadInt<T>() where T : IEndianConverter, new()
 	{
-		return this.readValue<int>(4, new T().ToInt32);
+		return this.readValue<int>(4, EndianConverterInstance<T>.Value.ToInt32);
 	}
 
 	/// <summary>
@@ -295,7 +295,7 @@ internal class StreamIO : IDisposable
 	/// <returns></returns>
 	public long ReadLong<T>() where T : IEndianConverter, new()
 	{
-		return this.readValue<long>(8, new T().ToInt64);
+		return this.readValue<long>(8, EndianConverterInstance<T>.Value.ToInt64);
 	}
 
 	/// <summary>
@@ -314,7 +314,7 @@ internal class StreamIO : IDisposable
 	/// <returns></returns>
 	public short ReadShort<T>() where T : IEndianConverter, new()
 	{
-		return this.readValue<short>(2, new T().ToInt16);
+		return this.readValue<short>(2, EndianConverterInstance<T>.Value.ToInt16);
 	}
 
 	/// <summary>
@@ -333,7 +333,7 @@ internal class StreamIO : IDisposable
 	/// <returns></returns>
 	public float ReadSingle<T>() where T : IEndianConverter, new()
 	{
-		return this.readValue<float>(4, new T().ToSingle);
+		return this.readValue<float>(4, EndianConverterInstance<T>.Value.ToSingle);
 	}
 
 	/// <summary>
@@ -377,7 +377,7 @@ internal class StreamIO : IDisposable
 	/// <returns></returns>
 	public uint ReadUInt<T>() where T : IEndianConverter, new()
 	{
-		return this.readValue<uint>(4, new T().ToUInt32);
+		return this.readValue<uint>(4, EndianConverterInstance<T>.Value.ToUInt32);
 	}
 
 	/// <summary>
@@ -396,7 +396,7 @@ internal class StreamIO : IDisposable
 	/// <returns></returns>
 	public ulong ReadULong<T>() where T : IEndianConverter, new()
 	{
-		return this.readValue<ulong>(8, new T().ToUInt64);
+		return this.readValue<ulong>(8, EndianConverterInstance<T>.Value.ToUInt64);
 	}
 
 	/// <summary>
@@ -434,7 +434,7 @@ internal class StreamIO : IDisposable
 	/// <returns></returns>
 	public ushort ReadUShort<T>() where T : IEndianConverter, new()
 	{
-		return this.readValue<ushort>(2, new T().ToUInt16);
+		return this.readValue<ushort>(2, EndianConverterInstance<T>.Value.ToUInt16);
 	}
 
 	/// <summary>
@@ -502,5 +502,10 @@ internal class StreamIO : IDisposable
 	{
 		byte[] buffer = this.ReadBytes(length);
 		return converter(buffer);
+	}
+
+	private static class EndianConverterInstance<T> where T : IEndianConverter, new()
+	{
+		public static readonly T Value = new T();
 	}
 }
